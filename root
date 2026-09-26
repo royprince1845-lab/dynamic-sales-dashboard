@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dynamic Sales Dashboard</title>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        #message {
+            margin: 20px 0;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Dynamic Sales Dashboard</h1>
+
+    <div id="message">
+        Loading sales data...
+    </div>
+
+    <button onclick="addSale()">Add Sale</button>
+
+    <canvas id="salesChart"></canvas>
+
+</div>
+
+<script>
+
+    // Dynamic sales data
+    let salesData = {
+        January: 12000,
+        February: 15000,
+        March: 18000,
+        April: 14000,
+        May: 22000,
+        June: 25000
+    };
+
+    // Display total sales
+    function displayTotalSales() {
+
+        let total = 0;
+
+        for (let month in salesData) {
+            total += salesData[month];
+        }
+
+        document.getElementById("message").innerHTML =
+            "Total Sales: ₹" + total.toLocaleString("en-IN");
+    }
+
+    // Create chart
+    const ctx = document.getElementById("salesChart");
+
+    const salesChart = new Chart(ctx, {
+        type: "bar",
+
+        data: {
+            labels: Object.keys(salesData),
+
+            datasets: [{
+                label: "Monthly Sales",
+                data: Object.values(salesData),
+                borderWidth: 1
+            }]
+        },
+
+        options: {
+            responsive: true,
+
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Add a new sale dynamically
+    function addSale() {
+
+        let month = "July";
+
+        if (salesData[month]) {
+            salesData[month] += 5000;
+        } else {
+            salesData[month] = 5000;
+        }
+
+        // Update chart
+        salesChart.data.labels = Object.keys(salesData);
+        salesChart.data.datasets[0].data = Object.values(salesData);
+
+        salesChart.update();
+
+        // Update total
+        displayTotalSales();
+    }
+
+    // Initial display
+    displayTotalSales();
+
+</script>
+
+</body>
+</html>
